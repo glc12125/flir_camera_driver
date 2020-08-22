@@ -216,9 +216,9 @@ void SpinnakerCamera::connect() {
 
     try {
 
-      pCam_->TLStream.StreamDefaultBufferCountMode.SetValue(Spinnaker::StreamDefaultBufferCountMode_Manual);
-      pCam_->TLStream.StreamBufferHandlingMode.SetValue(Spinnaker::StreamBufferHandlingMode_NewestFirstOverwrite);
-      pCam_->TLStream.StreamDefaultBufferCount.SetValue(1);
+      pCam_->TLStream.StreamBufferCountMode.SetValue(Spinnaker::StreamBufferCountMode_Manual);
+      pCam_->TLStream.StreamBufferHandlingMode.SetValue(Spinnaker::StreamBufferHandlingMode_NewestOnly);
+      pCam_->TLStream.StreamBufferCountManual.SetValue(3);
 
       // Initialize Camera
       pCam_->Init();
@@ -338,7 +338,8 @@ void SpinnakerCamera::grabImage(sensor_msgs::Image* image,
 
         // Set Image Time Stamp
         // API description is wrong, this is NOT nanoseconds.
-        image->header.stamp.fromNSec(image_ptr->GetTimeStamp() * 1000);
+        std::cout << "Setting the timestamp from Spinnaker in NS: " << image_ptr->GetTimeStamp() << "\n";
+        image->header.stamp.fromNSec(image_ptr->GetTimeStamp());
         image->header.seq = image_ptr->GetFrameID();
 
         // Check the bits per pixel.

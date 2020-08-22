@@ -413,8 +413,8 @@ class SpinnakerCameraNodelet : public nodelet::Nodelet {
   void setupMavrosTriggering() {
     // Set up the camera to listen to triggers.
     config_.enable_trigger = "On";
-    config_.trigger_activation_mode = "RisingEdge";
-    config_.trigger_source = "Line2";
+    config_.trigger_activation_mode = "FallingEdge";
+    config_.trigger_source = "Line0";
     paramCallback(config_, 0);
     srv_->updateConfig(config_);
     // Set these for now...
@@ -439,7 +439,7 @@ class SpinnakerCameraNodelet : public nodelet::Nodelet {
         mavros_msgs::CommandTriggerControl req;
         req.request.trigger_enable = true;
         // This is NOT integration time, this is actually the sequence reset.
-        req.request.cycle_time = 1.0;
+        req.request.sequence_reset = 1.0;
 
         ros::service::call(mavros_trigger_service, req);
 
@@ -659,6 +659,7 @@ class SpinnakerCameraNodelet : public nodelet::Nodelet {
                 image_queue_ = image;
                 image_queue_exposure_us_ = exposure_us;
                 should_publish = false;
+                ROS_DEBUG("Will not publish");
               } else {
                 image->header.stamp =
                     shiftTimestampToMidExposure(new_stamp, exposure_us);
@@ -759,6 +760,8 @@ class SpinnakerCameraNodelet : public nodelet::Nodelet {
     }
     auto it = sequence_time_map_.find(header.seq + trigger_sequence_offset_);
     if (it == sequence_time_map_.end()) {
+      ROS_DEBUG("[Mavros Triggering] Cannot find %d(%d + offset %d) in map", header.seq + trigger_sequence_offset_,
+          header.seq, trigger_sequence_offset_);
       return false;
     }
 
@@ -772,8 +775,8 @@ class SpinnakerCameraNodelet : public nodelet::Nodelet {
     if (delay < kMinExpectedDelay || delay > kMaxExpectedDelay) {
       ROS_ERROR(
           "[Mavros Triggering] Delay out of bounds! Actual delay: %f s, min: "
-          "%f s max: %f s. Resetting triggering on next image.",
-          delay, kMinExpectedDelay, kMaxExpectedDelay);
+          "%f s max: %f s. New header stamp %f <-> saved stamp %f. Resetting triggering on next image.",
+          delay, kMinExpectedDelay, kMaxExpectedDelay, header.stamp.toSec(), it->second.toSec());
       triggering_started_ = false;
     }
 
