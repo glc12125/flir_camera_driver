@@ -338,7 +338,7 @@ void SpinnakerCamera::grabImage(sensor_msgs::Image* image,
 
         // Set Image Time Stamp
         // API description is wrong, this is NOT nanoseconds.
-        std::cout << "Setting the timestamp from Spinnaker in NS: " << image_ptr->GetTimeStamp() << "\n";
+        //std::cout << "Setting the timestamp from Spinnaker in NS: " << image_ptr->GetTimeStamp() << "\n";
         image->header.stamp.fromNSec(image_ptr->GetTimeStamp());
         image->header.seq = image_ptr->GetFrameID();
 

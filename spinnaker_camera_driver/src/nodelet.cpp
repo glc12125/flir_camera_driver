@@ -772,13 +772,13 @@ class SpinnakerCameraNodelet : public nodelet::Nodelet {
     const double kMinExpectedDelay = 0.0;
     const double kMaxExpectedDelay = 40.0 * 1e-3;
     double delay = header.stamp.toSec() - it->second.toSec();
-    if (delay < kMinExpectedDelay || delay > kMaxExpectedDelay) {
+    /*if (delay < kMinExpectedDelay || delay > kMaxExpectedDelay) {
       ROS_ERROR(
           "[Mavros Triggering] Delay out of bounds! Actual delay: %f s, min: "
           "%f s max: %f s. New header stamp %f <-> saved stamp %f. Resetting triggering on next image.",
           delay, kMinExpectedDelay, kMaxExpectedDelay, header.stamp.toSec(), it->second.toSec());
       triggering_started_ = false;
-    }
+    }*/
 
     *timestamp = it->second;
     sequence_time_map_.erase(it);
