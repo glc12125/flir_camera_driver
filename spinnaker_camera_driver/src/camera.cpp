@@ -99,6 +99,7 @@ void Camera::setNewConfiguration(const SpinnakerConfig& config,
     setProperty(node_map_, "TriggerMode", config.enable_trigger);
     setProperty(node_map_, "TriggerDelay",
                 static_cast<float>(config.trigger_delay));
+    setProperty(node_map_, "TriggerOverlap", config.trigger_overlap_mode);
 
     setProperty(node_map_, "LineSelector", config.line_selector);
     setProperty(node_map_, "LineMode", config.line_mode);
@@ -136,6 +137,8 @@ void Camera::setNewConfiguration(const SpinnakerConfig& config,
     } else {
       setProperty(node_map_, "AutoExposureExposureTimeUpperLimit",
                   static_cast<float>(config.auto_exposure_time_upper_limit));
+      setProperty(node_map_, "AutoExposureExposureTimeLowerLimit",
+                  static_cast<float>(config.auto_exposure_time_lower_limit));
     }
 
     // Set gain
@@ -157,6 +160,10 @@ void Camera::setNewConfiguration(const SpinnakerConfig& config,
     // Set white balance
     if (IsAvailable(node_map_->GetNode("BalanceWhiteAuto"))) {
       setProperty(node_map_, "BalanceWhiteAuto", config.auto_white_balance);
+      setProperty(node_map_, "BalanceWhiteAutoProfile", config.auto_white_balance_profile);
+      setProperty(node_map_, "BalanceWhiteAutoLowerLimit", static_cast<float>(config.white_balance_auto_lower_limit));
+      setProperty(node_map_, "BalanceWhiteAutoUpperLimit", static_cast<float>(config.white_balance_auto_upper_limit));
+      setProperty(node_map_, "BalanceWhiteAutoDamping", static_cast<float>(config.white_balance_auto_damping));
       if (config.auto_white_balance.compare(std::string("Off")) == 0) {
         setProperty(node_map_, "BalanceRatioSelector", "Blue");
         setProperty(node_map_, "BalanceRatio",
