@@ -124,7 +124,10 @@ void Camera::setNewConfiguration(const SpinnakerConfig& config, const uint32_t& 
     {
       setProperty(node_map_, "AutoExposureExposureTimeUpperLimit",
                   static_cast<float>(config.auto_exposure_time_upper_limit));
+      setProperty(node_map_, "AutoExposureExposureTimeLowerLimit",
+                  static_cast<float>(config.auto_exposure_time_lower_limit));
     }
+
 
     // Set gain
     setProperty(node_map_, "GainSelector", config.gain_selector);
